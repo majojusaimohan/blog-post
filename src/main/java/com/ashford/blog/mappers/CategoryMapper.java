@@ -2,6 +2,7 @@ package com.ashford.blog.mappers;
 
 import com.ashford.blog.domain.PostStatus;
 import com.ashford.blog.domain.dtos.CategoryDto;
+import com.ashford.blog.domain.dtos.CreateCategoryRequest;
 import com.ashford.blog.domain.entities.Category;
 import com.ashford.blog.domain.entities.Post;
 import org.mapstruct.Mapper;
@@ -25,4 +26,6 @@ public interface CategoryMapper {
         }
         return posts.stream().filter(post-> PostStatus.PUBLISHED.equals(post.getStatus())).count();
     }
+
+    Category toEntity(CreateCategoryRequest createCategoryRequest);
 }

@@ -2,14 +2,16 @@ package com.ashford.blog.controllers;
 
 
 import com.ashford.blog.domain.dtos.CategoryDto;
+import com.ashford.blog.domain.dtos.CreateCategoryRequest;
 import com.ashford.blog.domain.entities.Category;
 import com.ashford.blog.mappers.CategoryMapper;
 import com.ashford.blog.services.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +31,13 @@ public class CategoryController {
             .toList();
 
     return ResponseEntity.ok(categories);
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CreateCategoryRequest createCategoryRequest){
+        // Implementation for creating a category goes here
+        Category categoryToCreate=categoryMapper.toEntity(createCategoryRequest);
+        Category savedCategory=categoryService.createCategory(categoryToCreate);
+        return new ResponseEntity<>(categoryMapper.toDto(savedCategory), HttpStatus.CREATED);
     }
 }

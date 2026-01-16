@@ -3,6 +3,7 @@ package com.ashford.blog.services.impl;
 import com.ashford.blog.domain.entities.Category;
 import com.ashford.blog.repositories.CategoryRepository;
 import com.ashford.blog.services.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> listCategories() {
         return categoryRepository.findAllWithPostCount();
+    }
+
+    @Override
+    @Transactional
+    public Category createCategory(Category category) {
+        if(categoryRepository.existsByNameIgnoreCase(category.getName())){
+            throw new IllegalArgumentException("Category with name " + category.getName() + " already exists.");
+        } else {
+            return categoryRepository.save(category);
+        }
     }
 }
