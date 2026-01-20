@@ -1,16 +1,17 @@
 package com.ashford.blog.controllers;
 
+import com.ashford.blog.domain.dtos.CreateTagsRequest;
 import com.ashford.blog.domain.dtos.TagResponse;
 import com.ashford.blog.domain.entities.Tag;
 import com.ashford.blog.mappers.TagMapper;
 import com.ashford.blog.services.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path="/api/v1/tags")
@@ -28,4 +29,20 @@ public class TagController {
 
         return ResponseEntity.ok(tagResponses);
     }
+
+    @PostMapping
+    public ResponseEntity<List<TagResponse>> createTag(@RequestBody CreateTagsRequest createTagsRequest) {
+        // Implementation for creating a tag goes here
+        List<Tag> savedTags = tagService.createTags(createTagsRequest.getNames());
+        List<TagResponse> createdTagResponses = savedTags.stream().map(tagMapper::toTagResponse).toList();
+        return new ResponseEntity<>(createdTagResponses, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path="/{id}")
+    public ResponseEntity<Void> deleteTag(@PathVariable UUID id) {
+        tagService.deleteTag(id);
+        return ResponseEntity.noContent().build();
+
+    }
+
 }
